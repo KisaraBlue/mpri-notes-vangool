@@ -1,2 +1,2 @@
 all:
-	pdflatex mpri-vangool-notes.tex
+	latexmk -pdf mpri-vangool-notes.tex
