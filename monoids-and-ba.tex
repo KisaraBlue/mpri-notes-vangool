@@ -20,7 +20,7 @@ The set $(ab)^*a = \{ (ab)^na \ : \ n \in \omega \} = \{a, aba, ababa, \dots\}$ 
   \path (B) edge (FINALB);
   \path (A) edge[bend left=20]        node  {$a$}  (B)
       (B) edge[bend left=20]  node  {$b$}  (A);
-%      (C) edge[bend left=20]  node  {$a$}  (B);   
+
 \end{tikzpicture}
 \end{center}
 
@@ -52,7 +52,8 @@ We say that the homomorphism $\eta$ \emph{recognizes} the language $(ab)^*a$.
 
 Up to here, our description of the situation does not actually  depend on the particular example of a regular language, as we will also see in Definition~\ref{def:automaton} below. A property that is specific to the regular language $(ab)^*a$ is that it may be described alternatively with the \emph{star-free expression}
 \[  A^*a \cap aA^* \cap (A^*aaA^* \cup A^*bbA^*)^c.\]
-The above expression is called star-free because it can be built from  single letters and the set $A^*$ of all words using only the operations of concatenation, union (that we denote by $\cup$ instead of $+$) and complementation, $()^c$.% The name stems from the fact that the operation $()^*$ is essentially not used in this expression, noting that $A^*$ can be written as $\emptyset^c$.
+The above expression is called star-free because it can be built from  single letters and the set $A^*$ of all words using only the operations of concatenation, union (that we denote by $\cup$ instead of $+$) and complementation, $()^c$.
+% The name stems from the fact that the operation $()^*$ is essentially not used in this expression, noting that $A^*$ can be written as $\emptyset^c$.
 %
 
 In fact, \emph{every} language recognized by the homomorphism $\eta$ can be described by a star-free expression, such as for example $(ab)^+$, which is $\eta^{-1}(T')$ for $T' := \{s \in S \colon q_0 \in s(\{q_0\})\}$.
@@ -108,8 +109,7 @@ For any set $X$, the set $\mathrm{End}(X)$ of functions $X \to X$ with compositi
   A subset $T$ of a semigroup $S$ is called a \emph{subsemigroup} if, for any $t, t' \in T$, the element $t \cdot t'$ is also in $T$.  A \emph{submonoid} of a monoid $M$ is a subsemigroup $N$ of $M$ that contains the neutral element. A \emph{subgroup} of a monoid $M$ is a submonoid that is a group.
 \end{definition}
 \begin{exercise}\easy
-  % An element in a monoid $M$ is called \emph{invertible} if it has a two-sided inverse.
-  Prove that the set of invertible elements in a monoid form the largest subgroup of the monoid. Describe what this group is in the monoids given in Examples~\ref{exa:free} and \ref{exa:end}.
+ Prove that the set of invertible elements in a monoid form the largest subgroup of the monoid. Describe what this group is in the monoids given in Examples~\ref{exa:free} and \ref{exa:end}.
 \end{exercise}
 
 \begin{example}
@@ -211,7 +211,7 @@ The syntactic semigroup is a \emph{smallest} recognizer for $L$, where `smallnes
   Let $S$ and $T$ be semigroups. We say that $S$ \emph{divides} $T$ if there exist a subsemigroup $T'$ of $T$ and congruence $\theta$ on $T'$ such that $S$ is isomorphic to $T'/{\theta}$.
 \end{definition}
 \begin{exercise}\easy\label{exe:division}
-Prove that $S$ divides $T$ if, and only if, there exist a semigroup $U$, an injective homomorphism $i \colon U \to T$, and a surjective homomorphism $g \colon U \to S$. %({\it Hint.} Use Proposition~\ref{prop:homthm}.)
+Prove that $S$ divides $T$ if, and only if, there exist a semigroup $U$, an injective homomorphism $i \colon U \to T$, and a surjective homomorphism $g \colon U \to S$. 
 \end{exercise}
 \begin{proposition}
   Let $L \subseteq A^+$. A semigroup $T$ recognizes $L$ if, and only if, the syntactic semigroup of $L$ divides $T$.
@@ -220,8 +220,6 @@ Prove that $S$ divides $T$ if, and only if, there exist a semigroup $U$, an inje
   Let $T$ be a semigroup recognizing $L$. Pick a homomorphism $f \colon A^+ \to T$ and $P \subseteq T$ such that $L = f^{-1}(P)$. Let $U$ be the semigroup $A^+/{\ker(f)}$, and $i \colon U \to T$ the injective homomorphism given by Proposition~\ref{prop:homthm}. The congruence $\ker(f)$ on $A^+$ saturates $L$, so $\ker(f) \subseteq {\sim_L}$ by Proposition~\ref{prop:syntcong}. Thus, the function $g \colon U \to S(L)$ defined by $g([w]_{\ker{f}}) = [w]_{\sim_L}$ is well-defined, and $g$ is clearly surjective. By Exercise~\ref{exe:division}, $S(L)$ divides $T$.
  
   Conversely, suppose that $S(L)$ divides a semigroup $T$; let $T'$ be a subsemigroup of $T$,  and $g \colon T' \to S(L)$ a surjective homomorphism. For any $a \in A$, choose $f(a) \in T'$ such that $g(f(a)) = [a]_{\sim_L}$. Denote by $\bar{f} \colon A^+ \to T$ the homomorphism extending $f$, which exists by Proposition~\ref{prop:free}. Then, applying the uniqueness part of Proposition~\ref{prop:free}, we have $g \circ \bar{f} = p_{\sim_L}$, since $g(\bar{f}(a)) = g(f(a)) = [a]_{\sim_L}$ for every $a \in A$. Hence, $L = (\bar{f})^{-1}(P)$, where $P := g^{-1}(p_{\sim_L}(L))$. Thus, $\bar{f} \colon A^+ \to T$ recognizes $L$.
-% 
-  %$\theta$ a congruence on $T'$, and $f \colon T'/{\theta} \to S(L)$ an isomorphism. For any $a \in A$, choose an element $g(a) \in T'$ such that $f(g(a)) = [a]_{\sim_L}$. Denote by $\bar{g} \colon A^+ \to T'$ the unique homomorphism extending $g$, by the existence part of Proposition~\ref{prop:free}. Then $f \circ \bar{g}$ is a homomorphism $A^+ \to S(L)$ with $f(\bar{g}(a)) = [a]_{\sim_L}$ for every $a \in A$, so $f \circ p_\theta \circ \bar{g} = p_{\sim_L}$, using the uniqueness part of Proposition~\ref{prop:free}. In particular,%Thus, $p_\theta \circ \bar{g} = f^{-1} \circ p_{\sim_L}$, and $\bar{g}$ recognizes $L$.
 \end{proof}
 
 \section{Discrete duality for regular languages}
@@ -301,9 +299,7 @@ and
 The definition of Boolean algebras that we gave above was order-theoretic; as for lattices, there exist several equivalent \emph{equational} definitions. The simplest equational definition, and most useful for our purposes, is that a \emph{Boolean algebra} is a tuple $(B,\wedge,\vee,\bot,\top,\neg)$ such that $(B,\wedge,\vee,\bot,\top)$ is a distributive lattice, and for all $a \in B$, $a \wedge \neg a = \bot$ and $a \vee \neg a = \top$. The \emph{terminology} `Boolean algebra' comes from another (the original) equational definition: a Boolean algebra is the same thing as a commutative ring with unit in which all elements are idempotent.
 \begin{exercise}\label{exe:BAeq}\easy
 Let $(B,+,\cdot,0,1)$ be a commutative ring with unit in which $a^2 = a$ for all $a \in B$. Define $a \leq b$ if, and only if, $a \cdot b = a$. Prove that $\leq$ is a distributive lattice order on $B$, and that
-% (Hint: the infimum of $a$ and $b$ is $a \cdot b$, and the supremum of $a$ and $b$ is $a + b - ab$.)
  every element of $B$ has a complement with respect to $\leq$. \emph{Hint:} first show that $a + a = 0$ for all $a \in B$.
-% (Hint: the complement is 1 - a)
 
 Conversely, let $(B,\wedge,\vee,\bot,\top,\neg)$ be a Boolean algebra. Define, for any $a, b \in B$, $a + b := (a \wedge \neg b) \vee (\neg a \wedge b)$, $a \cdot b := a \wedge b$, $0 := \bot$ and $1 := \top$. Prove that $(B,+,\cdot,0,1)$ is a commutative ring with unit in which $a^2 = a$ for all $a \in B$.
 \end{exercise}
@@ -417,7 +413,7 @@ For a subset $U \subseteq \Po(S)$, we denote by $B(U)$ the \emph{Boolean residua
 We are now ready to prove the discrete duality theorem for semigroups which we will need in order to characterize regularity. Recall from Exercise~\ref{exe:conlattice} that the congruences on a semigroup $S$ form a complete lattice under the inclusion order.
 
 \begin{theorem}[Discrete duality for semigroups, quotients and subs]\label{thm:semigroup-quotient-duality}
-  Let $S$ be a semigroup and $(\Po(S), \cdot, \backslash, \slash)$ its discrete dual residuated Boolean algebra. The congruence lattice of $S$ is dually isomorphic to the lattice of complete Boolean residuation ideals of $\Po(S)$.%Under discrete duality, monoid quotients of $M$ correspond to complete Boolean residuation ideals of $\Po(M)$.
+  Let $S$ be a semigroup and $(\Po(S), \cdot, \backslash, \slash)$ its discrete dual residuated Boolean algebra. The congruence lattice of $S$ is dually isomorphic to the lattice of complete Boolean residuation ideals of $\Po(S)$.%
 \end{theorem}
 \begin{proof}
   It suffices to show that the dual isomorphism given in the proof of Theorem~\ref{thm:disc-quot-sub} restricts to semigroup congruences and complete Boolean residuation ideals. Using the same notation as in that proof, suppose first that $\sim$ is a congruence on $S$; we show that $I_\sim$ is a residuation ideal. Indeed, let $r \in \Po(S)$ and $s \in I_\sim$. We need to show that $s/r$ and $r \backslash s$ are both $\sim$-saturated. We only show the former, the proof of the latter is the same. Suppose that $m \in s/r$ and that $m \sim m'$. Let $n \in r$ be arbitrary. Since $\sim$ is a congruence, we have $mn \sim m'n$. Since $m \in s/r$, we have $mn \in s$. Since $s$ is $R$-saturated, we get $m'n \in s$, as required.
@@ -467,19 +463,11 @@ For any $x \in A^+$, $(I,F) \in \Po(Q)^2$, we have
 \end{lemma}
 \begin{proof}
   Recall that, for any $x, w \in A^+$, $wx \in L(I,F)$ if, and only if, $\Diamond_{wx}(F) \cap I \neq \emptyset$. This is the case if, and only if, $\Diamond_w(\Diamond_x(F)) \cap I \neq \emptyset$, which establishes the second equality. The first equality follows similarly, noting that $xw \in L(I,F)$ if, and only if $\blacklozenge_{xw}(I) \cap F \neq \emptyset$.
-  %there exist states $q_0, q_1, q_2 \in Q$ such that $q_0 \in I$, $q_2 \in F$, $q_0 \stackrel{x}{\to} q_1$, and $q_1 \stackrel{w}{\to} q_2$. Equivalently, $w$ is accepted by $\cA' = (Q,A,\delta,\blacklozenge_x(I),F)$. This proves the first equality, the proof of the second equality is very similar. 
 \end{proof}
 
 
 \begin{proposition}\label{prop:residuationideal}
-For any automaton $\cA$, $B(\cA)$ is a finite (hence complete) Boolean residuation ideal in $\Po(A^+)$. %For any $K \in \Po(A^*)$, %the following hold:
-%\begin{enumerate}
-%\item if $L \in R(\cA)$, then $K \backslash L \in \cL(\cA)$ and $L \slash K \in \cL(\cA)$;
-%\item \label{it:latticeresideal} 
-%if $L \in \cL(\cA)$, then $K \backslash L \in \cL(\cA)$ and $L \slash K \in \cL(\cA)$ and if $L \in \cB(\cA)$, then $K \backslash L \in \cB(\cA)$ and $L \slash K \in \cB(\cA)$.
-%;
-%\item \label{it:BAresideal} if $L \in \cB(\cA)$, then $K \backslash L \in \cB(\cA)$ and $L \slash K \in \cB(\cA)$.
-%\end{enumerate}
+For any automaton $\cA$, $B(\cA)$ is a finite (hence complete) Boolean residuation ideal in $\Po(A^+)$.
 \end{proposition}
 \begin{proof}
 Let $x\in A^*$. By Lemma~\ref{lem:autfinite}, the generating set of $B(\cA)$ is closed under the quotient operations $x^{-1}(\ )$ and $(\ )x^{-1} $. Also, by Exercise~\ref{exe:quot-hom}, these operations are homomorphisms, and thus the Boolean algebra generated by this set remains closed under these operations. Since $B(\cA)$ is finite, it is complete. By Exercise~\ref{exe:quotients-enough}, $B(\cA)$ is a residuation ideal.
