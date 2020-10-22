@@ -1,0 +1,195 @@
+\documentclass[11pt]{book}
+
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{array}
+\usepackage[utf8]{inputenc}
+\usepackage{tikz}
+\usetikzlibrary{shapes,backgrounds,matrix,arrows,automata,positioning}
+\usepackage{tikz-cd}
+\usepackage{scalefnt}
+
+%% TIKZ AUTOMATA MACROS
+
+\newcommand{\finalarr}[1]{
+  \node (FINAL#1) [right=0.5cm of #1] {};
+  \path (#1) edge (FINAL#1);
+  }
+
+\newcommand{\initarr}[1]{
+  \node (INIT#1) [left=0.5cm of #1] {};
+  \path (INIT#1) edge (#1);
+  }
+
+
+
+\usepackage{enumitem}
+
+\usepackage{verbatim}
+
+\usepackage[hidelinks]{hyperref}
+
+\usetikzlibrary{matrix,arrows}
+
+%set margins
+\usepackage[top=3cm,bottom=3cm,left=3cm,right=3cm]{geometry}
+\parindent=0pt
+
+%set linespread
+\usepackage{setspace}
+\linespread{1}
+
+
+%theorem styles
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}
+\newtheorem*{theoremstar}{Theorem}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{example}[theorem]{Example}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem*{remarknonum}{Remark}
+\newtheorem*{notation}{Notation}
+\newtheorem{exercise}[theorem]{Exercise}
+\newtheorem*{zornslemma}{Zorn's Lemma}
+\newtheorem*{alexanderlemma}{Alexander Subbasis Lemma}
+
+\renewcommand{\thetheorem}{\arabic{theorem}}
+%\renewcommand{\thesection}{\arabic{section}}
+\renewcommand{\theenumi}{\alph{enumi}}
+
+\newcommand{\exercises}{\subsection*{Exercises for Section~\thesection}}
+
+\numberwithin{theorem}{chapter}
+%\numberwithin{exercise}{chapter}
+%arrows
+\newcommand{\onto}{\twoheadrightarrow}
+\newcommand{\twoheaduparrow}{{\rotatebox[origin=c]{90}{$\twoheadrightarrow$}}}
+\newcommand\twoheaddownarrow{\mathrel{\rotatebox[origin=c]{-90}{$\twoheadrightarrow$}}}
+\newcommand{\To}{\Rightarrow}
+\newcommand{\gen}[1]{\langle #1 \rangle}
+\newcommand{\into}{\hookrightarrow}
+
+%greek letters
+\renewcommand{\theta}{\vartheta}
+\renewcommand{\phi}{\varphi}
+
+
+\newcommand{\cB}{\mathcal{B}}
+\newcommand{\cC}{\mathcal{C}}
+\newcommand{\cD}{\mathcal{D}}
+\newcommand{\cF}{\mathcal{F}}%closed subsets
+\newcommand{\cK}{\mathcal{K}}%compact saturated subsets
+\newcommand{\cL}{\mathcal{L}}
+\newcommand{\cN}{\mathcal{N}}
+\newcommand{\cP}{\mathcal{P}}%powerset
+\newcommand{\cS}{\mathcal{S}}
+\newcommand{\cT}{\mathcal{T}}
+
+\newcommand{\Top}{\mathit{Top}}
+
+%categories
+\newcommand{\cat}[1]{\ensuremath{\mathbf{#1}}}
+\newcommand{\BA}{\cat{BA}}
+\newcommand{\Pos}{\cat{Pos}}
+\newcommand{\DL}{\cat{DL}}
+\newcommand{\Set}{\cat{Set}}
+\newcommand{\POS}{\cat{Pos}}
+\newcommand{\PreOS}{\cat{PreOS}}
+\newcommand{\dcpo}{\cat{dcpo}}
+\newcommand{\TOP}{\cat{Top}}
+\newcommand{\SOB}{\cat{Sober}}
+\newcommand{\CONT}{\cat{Domain}}
+\newcommand{\Stone}{\cat{Stone}}
+\newcommand{\BStone}{\cat{BStone}}
+\newcommand{\Frame}{\cat{Frame}}
+\newcommand{\SpFrame}{\cat{SpFrame}}
+\newcommand{\ArithFr}{\cat{ArithFr}}
+\newcommand{\Priest}{\cat{Priestley}}
+
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\utwo}{\underline{\bf 2}}
+\newcommand{\btwo}{{\bf 2}}
+
+
+\newcommand{\cA}{\mathcal{A}}
+\newcommand{\cR}{\mathcal{R}}
+
+\newcommand{\Pt}{\mathrm{Pt}}
+\newcommand{\St}{\mathrm{St}}
+
+\newcommand{\Up}{\mathcal{U}} %up-sets
+\newcommand{\Down}{\mathcal{D}} %down-sets
+\newcommand{\ClD}{\mathcal{KD}} %clopen down-sets
+\newcommand{\Cl}{\mathcal{K}} % clopens
+\newcommand{\CO}{\mathrm{CO}}% Compact-Opens
+\newcommand{\Po}{\mathcal{P}} %power set
+\newcommand{\op}{\mathrm{op}} %opposite
+\newcommand{\J}{\mathcal{J}} %join-irreducibles
+\newcommand{\Comp}{\it{Comp}} %compact elements
+\newcommand{\M}{\mathcal{M}} %meet-irreducibles
+\newcommand{\Filt}{\mathrm{Filt}} % Filters
+\newcommand{\Idl}{\mathrm{Idl}} % Ideals
+\newcommand{\PrFilt}{\mathrm{PrFilt}} % Prime Filters
+\newcommand{\PrIdl}{\mathrm{PrIdl}} % Prime ideals
+\newcommand{\CompPrFilt}{\mathrm{CompPrFilt}} % Completely Prime Filters
+\DeclareMathOperator{\ob}{\mathrm{ob}}
+\DeclareMathOperator{\mor}{\mathrm{mor}}
+\DeclareMathOperator{\cod}{\mathrm{cod}}
+\DeclareMathOperator{\dom}{\mathrm{dom}}
+
+%logic symbols
+\newcommand{\Prop}{\mathsf{Prop}} %basic propositions
+\renewcommand{\Form}{\mathrm{Form}} %formula algebra
+\newcommand{\CPL}{\mathsf{CPL}}
+\newcommand{\liff}{\leftrightarrow}
+
+\newcommand{\Hom}{\mathrm{Hom}}
+\newcommand{\id}{\mathrm{id}}
+%notes at end of chapter
+\usepackage{endnotes,etoolbox}
+% end note marker = superscripted number in brackets
+%\renewcommand\makeenmark{\textsuperscript{[\theenmark]}}
+
+% in the endnotes, we change it without `\textsuperscript`, adding a space
+\patchcmd{\theendnotes}
+  {\makeatletter}
+  {\makeatletter\renewcommand\makeenmark{\theenmark. }}
+  {}{}
+
+\newcommand{\wayb}{<\!\!\!<}
+
+
+%% TIKZ MACROS
+\newcommand{\labeldist}{.1cm}
+\newcommand{\po}[1]{\draw[fill=black] #1 circle (2pt);}
+\newcommand{\polab}[3]{\draw[fill=black] #1 circle (2pt); \node[#3=\labeldist] at #1 {#2};}
+\newcommand{\li}[2]{\draw [thick] #1 -- #2;}
+
+
+\newcommand{\easy}{($\star$) }
+\newcommand{\medium}{($\star\star$) }
+\newcommand{\hard}{($\star\star\star)$ }
+
+
+% for index
+
+%INDEX PACKAGE
+\usepackage{makeidx}
+\usepackage[refpage]{nomencl}
+\renewcommand{\pagedeclaration}{, }
+\renewcommand{\nomname}{Notation}
+\makenomenclature
+\newcommand{\emphind}[1]{\emph{#1}\index{#1}}
+
+
+
+\makeindex
+
+
+%%% Local Variables:
+%%% TeX-master: "mpri-vangool-notes"
+%%% End:

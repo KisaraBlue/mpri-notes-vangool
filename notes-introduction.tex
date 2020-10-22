@@ -1,0 +1,30 @@
+
+\title{Automata and Profiniteness}
+\author{Sam van Gool}
+\date{October/November 2020}
+\maketitle
+
+\section*{About these notes}
+These are the notes accompanying a short lecture course on \emph{automata and profinitess}, the second part of the course \emph{Automates et mod\`eles de calcul} in the Parisian Master of Research in Computer Science (MPRI) in the year 2020-2021.
+
+
+A particularity of these lectures, compared to existing courses with comparable aims such as the excellent reference \cite{JEP-MPRI}\footnote{\url{https://www.irif.fr/~jep/PDF/MPRI/MPRI.pdf}}, to which these notes owe a lot, is that we throw \emph{duality theory} into the mix of automata, monoids and profinite spaces. % Duality theory is a mathematical theory which provides the underpinning for the fundamental connection between syntax and semantics in logic and computer science.
+Duality has many other applications, that we will not be able cover in this course, but we refer the interested reader to our draft \cite{thebook} of a textbook on Duality\footnote{\url{https://www.samvangool.net/dualitybook-draft.pdf}}, co-authored with Mai Gehrke.
+There is some overlap between these notes and the textbook, which is itself  based on a set of handwritten lecture notes of a course on Duality in Computer Science taught by Mai Gehrke in Paris a few years ago.\\
+
+
+Disclaimer: this is a draft version, and it is not yet ready for publication or too wide distribution. There may be silly or serious errors; it is meant to be a living document (not literally - I hope) and will therefore grow and change as the course moves along. Comments and corrections are welcome; please send them to vangool@irif.fr or submit a pull request.
+
+\section*{Abstract}
+The overall aim of these lectures is to introduce an algebraic and topological point of view on automata and languages, using the theory of profinite monoids. We will begin by explaining how the syntactic monoid of a regular language is related to a certain Boolean algebra canonically associated to that language. We will then show how these structures play a role in a classical result of Schützenberger, namely, the decidability of the class of star-free languages through a characterization of their syntactic monoids. Duality theory will be introduced as we move along, placing this result in a wider context, namely the correspondence between certain classes of regular languages and certain profinite monoids, yielding the modern point of view on Eilenberg-Reiterman variety theory. Building on this theory, we will make a connection to logic, and, if time permits, we will show some generalizations to the non-regular setting, bringing us to the frontier of current research in this area. Here is a rough outline:
+\begin{enumerate}
+\item[1.]  Syntactic semigroups as dual spaces; the dual equivalence between monoid quotients and Boolean residuation ideals.
+\item[2.]   Generalization to profinite monoids and Boolean residuation algebras; Eilenberg-Reiterman correspondence theory, and a few particular cases, such as Schützenberger's Theorem: aperiodic = star-free.
+\item[3.]    Connections to logic: monadic second order logic and the power space construction; pro-aperiodic monoids via model theory.
+\item[4.]   Generalizing to non-regular languages: ultrafilter equations and measures.
+\end{enumerate}
+
+
+%%% Local Variables:
+%%% TeX-master: "mpri-vangool-notes"
+%%% End:

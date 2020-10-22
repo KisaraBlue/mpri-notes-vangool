@@ -1,0 +1,516 @@
+\chapter{Syntactic semigroups as dual spaces}
+
+\section{A motivating example}\label{sec:example}
+In order to provide a bridge between the more abstract algebraic theory that will follow and the basic automata theory that the reader is likely familiar with, we begin with an example. %
+% 
+The aim of this example is to convey the idea that (1) the basic notions of automata theory naturally allow for an algebraic point of view using semigroups; (2) properties of languages (such as ``star-freeness'') can be detected using recognizing semigroups; (3) there is a need for an intrinsic definition of ``semigroup associated to a language''. A secondary aim is to (implictly) fix some standard notations. Precise formal definitions of the notions of {\it semigroup}, {\it homomorphism}, {\it recognition}, {\it star-free} and {\it aperiodic} will be given later in the text, but are not needed to understand this example.
+
+The set $(ab)^*a = \{ (ab)^na \ : \ n \in \omega \} = \{a, aba, ababa, \dots\}$ is the \emph{language accepted} by the following finite automaton on the \emph{state set} $Q := \{q_0, q_1\}$ and \emph{finite alphabet} $A := \{a,b\}$:
+
+\begin{center}
+\begin{tikzpicture}[->,>=stealth',shorten >=1pt,auto,node distance=2.8cm,
+                    semithick]
+  \tikzstyle{every state}=[fill=white,draw=black,text=black]
+
+    \node[state] (A)          {$q_0$};
+  \node[state] (B)  [right of=A]  {$q_1$};
+    
+    \initarr{A}
+    \node (FINALB) [above=0.5cm of B] {};
+  \path (B) edge (FINALB);
+  \path (A) edge[bend left=20]        node  {$a$}  (B)
+      (B) edge[bend left=20]  node  {$b$}  (A);
+%      (C) edge[bend left=20]  node  {$a$}  (B);   
+\end{tikzpicture}
+\end{center}
+
+This automaton can be compactly described as a function $\Diamond$ from the finite alphabet $A$ to the set of functions $\mathcal{P}(Q) \to \mathcal{P}(Q)$, as follows. For any letter $x \in \{a,b\}$, the function $\Diamond_x$ sends a set of states $U \subseteq Q$ to the set of states
+\[ \Diamond_x(U) := \{ q \in Q \ \mid \ \text{ there is a state } u \in U \text{ and a transition } q \stackrel{x}{\to} u \}.\]
+For example, $\Diamond_a(\{q_1\}) = \Diamond_a(\{q_0,q_1\}) = \{q_0\}$, and $\Diamond_b(\{q_1\} = \emptyset$.
+
+Let us now also write, for any finite word $w$ in $A^+$, and any set of states $U \subseteq Q$,
+\[ \Diamond_w(S) := \{ q_i \ \mid \ \text{ there is a state } u \in U \text{ and a path } q_i \stackrel{w}{\to} u \}.\]
+Note that, if $w = w_1w_2$ for some $w_1, w_2 \in A^+$, then
+\begin{equation}\label{eq:diamond-hom}
+\Diamond_w(S) = \Diamond_{w_1} (\Diamond_{w_2}(S)).
+\end{equation}
+
+\begin{exercise}\label{exe:diamond}
+  This exercise is about the automaton introduced at the beginning of this section.
+  \begin{enumerate}
+\item \easy Compute $\Diamond_a$, $\Diamond_b$ and $\Diamond_{ab}$.
+\item \medium Compute all the elements in $\{ \Diamond_w \ \colon \ w \in A^+\} \subseteq \mathrm{End}(\Po(Q))$. How many are there?
+  \end{enumerate}
+\end{exercise}
+\begin{exercise}\easy
+ Prove (\ref{eq:diamond-hom}).
+\end{exercise}
+
+This equation (\ref{eq:diamond-hom}) expresses the fact that the function $w \mapsto \Diamond_w$ is a \emph{homomorphism} from the finitely generated free semigroup $A^+$ to the finite semigroup $S := \mathrm{End}(\mathcal{P}(Q))$ of functions $\mathcal{P}(Q) \to \mathcal{P}(Q)$, where multiplication in $S$ is functional composition. Let us denote this homomorphism by $\eta \colon A^+ \to S$. The language $(ab)^*a$ consists precisely of those words $w \in A^+$ such that $q_0 \in \eta(w)(\{q_1\})$, that is,
+\[ (ab)^*a = \eta^{-1}(T) \text{ where } T := \{s \in S \ \colon \ q_0 \in s(\{q_1\})\}.\]
+We say that the homomorphism $\eta$ \emph{recognizes} the language $(ab)^*a$. 
+
+Up to here, our description of the situation does not actually  depend on the particular example of a regular language, as we will also see in Definition~\ref{def:automaton} below. A property that is specific to the regular language $(ab)^*a$ is that it may be described alternatively with the \emph{star-free expression}
+\[  A^*a \cap aA^* \cap (A^*aaA^* \cup A^*bbA^*)^c.\]
+The above expression is called star-free because it can be built from  single letters and the set $A^*$ of all words using only the operations of concatenation, union (that we denote by $\cup$ instead of $+$) and complementation, $()^c$.% The name stems from the fact that the operation $()^*$ is essentially not used in this expression, noting that $A^*$ can be written as $\emptyset^c$.
+%
+
+In fact, \emph{every} language recognized by the homomorphism $\eta$ can be described by a star-free expression, such as for example $(ab)^+$, which is $\eta^{-1}(T')$ for $T' := \{s \in S \colon q_0 \in s(\{q_0\})\}$.
+\begin{exercise}\easy
+  Give a star-free expression for $(ab)^+$.
+\end{exercise}
+Even if we were to change the homomorphism $\eta$ into a homomorphism $\phi \colon A^+ \to S$, it would still be the case that $\phi^{-1}(T)$ is star-free for any $T \subseteq S$. Said otherwise, the property of being star-free \emph{only depends on the finite recognizing semigroup} $S$. In particular, this semigroup should not contain any groups. For example, contrast the above example with the language
+\[ (aa)^*a = \{ a^{2n+1} \ \colon \ n \in \omega \},\]
+which can \emph{not} be described by a star-free expression.
+
+Schützenberger \cite{Sch65} gave a direct and easily verifiable property for $S$ that is equivalent to its only accepting star-free languages: $S$ has to be \emph{aperiodic}, i.e., $S$ should not contain any groups, except for the trivial, one-element group. We will prove this result later in the course.
+
+\begin{exercise} \medium
+  Prove (using whatever method you like) that the language $(aa)^*a$ cannot be described by a star-free expression.
+
+  {\it Remark.} This exercise is an immediate consequence of the mentioned result by Schützenberger, but the point of this exercise is to find a direct proof.
+\end{exercise}
+
+The example given at the beginning of this section has at least one important shortcoming, that we will repair in what follows. We started with a particular accepting automaton for a language, and used it to construct a semigroup. Clearly, the presentation of this semigroup depends on the choice of the automaton: if we were unlucky enough to start from an automaton with a number of useless states, say, $n + 2$ states total, then the semigroup would be presented as a subsemigroup of the endo-functions on a set of cardinality $2^{n+2}$. Even worse, there are infinitely many non-isomorphic finite semigroups that could all be used to recognize this one language! One may thus reasonably wonder if there is an intrinsic, canonical choice of semigroup that can be directly associated to a language, perhaps in analogy with the minimal automaton construction. This is indeed the case, and we will define this semigroup, known as the \emph{syntactic semigroup} of a language, in the next section.
+
+\section{The syntactic semigroup}\label{sec:semigroups}
+\subsection*{Basic notions of semigroup theory}
+We first give some basic definitions concerning semigroups and monoids.
+\begin{definition}
+  A \emph{semigroup} is a pair $(S, \cdot)$, where $S$ is a set and $\cdot$ is a binary operation on $S$ that satisfies the associative law: for any $s, t, u \in S$, $s \cdot (t \cdot u) = (s \cdot t) \cdot u$.
+
+  A \emph{neutral element} in a semigroup $S$ is an element $1 \in S$ such that $1 \cdot s = s = s \cdot 1$ for all $s \in S$; note that a neutral element is unique if it exists. A \emph{monoid} is a tuple $(M, \cdot, 1)$ where $(M, \cdot)$ is a semigroup and $1$ is the neutral element in $M$.
+
+  An element $m$ in a monoid $(M, \cdot, 1)$ is \emph{invertible} if there exists an element $m^{-1}$ in $M$ such that $mm^{-1} = 1 = m^{-1}m$; in this case, $m^{-1}$ is called the \emph{(group) inverse} of $m$. A \emph{group} is a monoid in which every element is invertible.
+\end{definition}
+
+\begin{exercise} \easy
+  Show that a neutral element in a semigroup is unique if it exists. Show that an element in a monoid has at most one inverse.
+\end{exercise}
+
+\begin{exercise} 
+An element $m$ in a monoid $M$ is called \emph{left-invertible} if there exists an element $m^l$ such that $m^l m = 1$, and \emph{right-invertible} if there exists an element $m^r$ such that $m m^r = 1$. 
+\begin{enumerate}
+\item \easy Prove that a monoid $M$ is a group if, and only if, every element of $M$ is both left- and right-invertible.
+\item  \medium Prove that a \emph{finite} monoid $M$ is a group if, and only if, every element of $M$ is left-invertible.
+\end{enumerate}
+\end{exercise}
+
+We give a few important examples of semigroups and monoids.
+\begin{example}\label{exa:free}
+  For any set $A$, the set $A^+$ of finite non-empty sequences over $A$ with binary concatenation is a semigroup, called the \emph{free semigroup over $A$} (a justification for this name will be provided below). If we add to $A^*$ the empty sequence, denoted by $\epsilon$, we obtain $A^*$, the \emph{free monoid over $A$}.
+\end{example}
+\begin{example}\label{exa:end}
+For any set $X$, the set $\mathrm{End}(X)$ of functions $X \to X$ with composition is a monoid with identity element $\id_X$.
+\end{example}
+
+\begin{definition}
+  A subset $T$ of a semigroup $S$ is called a \emph{subsemigroup} if, for any $t, t' \in T$, the element $t \cdot t'$ is also in $T$.  A \emph{submonoid} of a monoid $M$ is a subsemigroup $N$ of $M$ that contains the neutral element. A \emph{subgroup} of a monoid $M$ is a submonoid that is a group.
+\end{definition}
+\begin{exercise}\easy
+  % An element in a monoid $M$ is called \emph{invertible} if it has a two-sided inverse.
+  Prove that the set of invertible elements in a monoid form the largest subgroup of the monoid. Describe what this group is in the monoids given in Examples~\ref{exa:free} and \ref{exa:end}.
+\end{exercise}
+
+\begin{example}
+Any totally ordered set $(C, \leq)$ is a monoid under the operation of binary minimum. More generally, if $S$ is a set and $\leq$ is a partial order (i.e., a reflexive, transitive, anti-symmetric relation) on $S$ such that any two elements have an infimum (greatest lower bound), then $(S, \inf)$ is a semigroup. Semigroups of the kind $(S, \inf)$ are called \emph{semilattices}. A semigroup $(S, \cdot)$ is a semilattice if, and only if, its multiplication is \emph{commutative} ($a \cdot b = b \cdot a$ for all $a,b \in S$) and \emph{idempotent} ($a^2 = a$ for all $a \in S$).
+\end{example}
+
+\begin{exercise} \easy
+  Prove that a semigroup is a semilattice if and only if it is commutative and idempotent.
+\end{exercise}
+
+\begin{definition}
+  A \emph{homomorphism} from a semigroup $S$ to a semigroup $T$ is a function $f \colon S \to T$ such that $f(s_1s_2) = f(s_1)f(s_2)$ for every $s_1, s_2 \in S$.  
+% 
+ A \emph{homomorphism} from a monoid $M$ to a monoid $N$ is a homomorphism $f$ between the underlying semigroups such that, moreover, $f(1_M) = 1_N$. An \emph{isomorphism} is a bijective homomorphism, and two semigroups are \emph{isomorphic} if there is an isomorphism between them.
+\end{definition}
+
+\begin{exercise}\easy\label{exe:image}
+Prove that the image of a homomorphism is a subsemigroup. Conclude that if $f \colon S \to T$ is an injective homomorphism, then $S$ is isomorphic to the subsemigroup $f(S)$ of $T$.
+\end{exercise}
+\begin{exercise}\easy
+  Let $G$ and $H$ be groups and suppose that $f \colon G \to H$ is a homomorphism between the underlying monoids. Prove that $f$ preserves inverses, i.e., $f(g^{-1}) = f(g)^{-1}$ for every $g \in G$.
+\end{exercise}
+
+\begin{definition}\label{def:cong}
+  A \emph{congruence} on a semigroup $S$ is an equivalence relation $\sim$ on $S$ such that, for any $s, s', t \in S$, if $s \sim s'$, then $st \sim s't$ and $ts \sim ts'$. A congruence on a monoid $S$ is a congruence on the underlying semigroup.
+
+The \emph{quotient} of the semigroup $S$ under the congruence $\sim$ is the semigroup on $S/{\sim}$ obtained by defining $[s]_\sim [t]_\sim := [st]_\sim$, for any $s, t \in S$. The fact that $\sim$ is a congruence ensures that multiplication in $S/{\sim}$ is well-defined. If $1 \in S$ is a neutral element, then so is $[1]_\sim \in S/{\sim}$. Note that the function $p_\sim \colon S \to S/{\sim}$ which sends $s$ to $[s]_\sim$ is a surjective homomorphism. 
+\end{definition}
+
+\begin{exercise}
+Let $G$ be a group. For any congruence $\sim$ on (the semigroup underlying) $G$, define $N_\sim := \{n \in G \ \colon \ n \sim 1_G\}$. 
+\begin{enumerate}
+\item\easy  Prove that $N_\sim$ is a normal subgroup of $G$ (i.e., a subgroup such that $n \in N_\sim$ implies $gng^{-1} \in N_\sim$ for all $g \in G$).
+\item\easy Prove that $G/{\sim}$ as defined in Definition~\ref{def:cong} is isomorphic to the group $G/N$ as usually defined in group theory using cosets of $N$.
+\item\medium  Prove that the assignment ${\sim} \mapsto {N_\sim}$ is a bijection between the congruences on $G$ and the normal subgroups of $G$.
+\end{enumerate}
+\end{exercise}
+
+\begin{proposition}[Homomorphism theorem for semigroups]\label{prop:homthm}
+Let $S$ and $T$ be semigroups, and let $f \colon S \to T$ be a homomorphism between semigroups. The \emph{kernel} of $f$, 
+\[ \ker(f) := \{(s,s') \in S \times S \ \colon \ f(s) = f(s') \},\]
+is a congruence on $S$, and there is a unique injective homomorphism $i \colon S/{\ker(f)} \to T$ such that $f = i \circ p_{\ker(f)}$.
+\end{proposition}
+\begin{exercise}\medium
+Prove Proposition~\ref{prop:homthm}.
+\end{exercise}
+
+\subsection*{Free and syntactic semigroups}
+Let $A$ be a finite set of symbols. The set, $A^+$, of \emph{finite words over the alphabet $A$}, i.e., finite non-empty sequences\footnote{We will always use enough notation to ensure that words be \emph{uniquely parsable}. If for example $A = \{|, ||, |||\}$, then `$|||$' is \emph{not} uniquely parsable: we will need to specify explicitly whether we mean a word of length $1$, $(|||)$, or one of the words of length $2$, $(|,||)$ or $(||,|)$. We will thus take care to avoid such ambiguous alphabets.} over $A$, is a semigroup under concatenation. Every element $a \in A$ is identified with the corresponding sequence of length $1$ in $A^+$, also denoted $a$.
+
+\begin{proposition}\label{prop:free}
+  The semigroup $A^+$ is \emph{free} over its set of generators $A$. That is, for any semigroup $S$ and any function $f \colon A \to S$, there exists a unique homomorphism $\bar{f} \colon A^+ \to S$ such that $\bar{f}(a) = f(a)$ for every $a \in A$.
+\end{proposition}
+\begin{proof}
+By induction on the length of $w \in A^+$, define $\bar{f}(wa) := \bar{f}(w) f(a)$. It is straightforward to verify that $\bar{f}$ is a homomorphism with the required property, and that is the unique such.
+\end{proof}
+We now make precise the definition of (finite, non-deterministic, word) automaton that we alluded to in the first section.
+\begin{definition}\label{def:automaton}
+  An \emph{automaton} is a tuple $\cA = (Q, A, \delta, I, F)$, where $Q$ is a finite set, $A$ is a finite alphabet, $\delta$ is a function $Q \times A \to \Po(Q)$, and $I$ and $F$ are subsets of $Q$. The \emph{reachability function} of $\cA$, $\Diamond^{\cA}_{-}$, is the unique homomorphism $A^+ \to \mathrm{End}(\Po(Q))$ defined by the condition $\Diamond^{\cA}_a(U) = \{q \in Q \ \colon \ U \cap \delta(q,a) \neq \emptyset\}$ for $a \in A$ and $U \in \Po(Q)$. The automaton $\cA$ \emph{accepts} a word $w \in A^+$ if $\Diamond^{\cA}_w(F) \cap I \neq \emptyset$. The \emph{language accepted by $\cA$} is denoted $L(\cA)$.
+\end{definition}
+\begin{exercise}\easy
+  Verify that the above definition of automata is equivalent to the one you are familiar with. Prove in particular that, for any $w \in A^+$ and $U \in \Po(Q)$,  $\Diamond_w(U)$ is the set of states $q$ such that there exists a path $q \stackrel{w}{\to} u$ for some $u \in U$.
+\end{exercise}
+We will return to automata at the end of the next section, but we first introduce the \emph{syntactic congruence}.
+\begin{definition}
+  Let $L$ be a subset of $A^+$. The \emph{syntactic preorder} of $L$ is the relation $\preceq_L$ on $A^+$ defined by 
+  \[ u \preceq_L v \iff \text{ for any } x,y \in A^*, \text{ if } xuy \in L, \text{ then } xvy \in L.\]
+% 
+  The \emph{syntactic congruence} of $L$ is the relation $\sim_L$ on $A^+$ defined by
+  \[ u \sim_L v \iff u \preceq_L v \text{ and } v \preceq_L u.\]
+  %
+The \emph{syntactic semigroup} of $L$ is the semigroup quotient $A^+/{\sim_L}$. We denote this semigroup by $S(L)$.\footnote{To familiarize yourself with this definition, it is instructive to compute a few examples, also see Exercise~\ref{exe:syntsemexa} below. A useful tool to check your calculations, programmed by Charles Paperman, is available at \url{https://paperman.name/semigroup/}.}
+\end{definition}
+Recall that, if $\equiv$ is an equivalence relation on a set $X$, and $L$ is a subset of $X$, then $\equiv$ \emph{saturates} $L$ if, for any $u \in L$, $v \in X$, $u \equiv v$ implies $v \in L$. Equivalently, $\equiv$ saturates $L$ if $L$ is a union of $\equiv$-classes.
+\begin{proposition}\label{prop:syntcong}
+The syntactic congruence $\sim_L$ of $L$ is the largest congruence on $A^+$ saturating $L$.
+\end{proposition}
+\begin{proof}
+  It is left as Exercise~\ref{exe:syntcong} to verify that $\sim_L$ is indeed a congruence on $A^+$. Note that, if $u \in L$ and $u \sim_L v$, then also $v \in L$, applying the definition of $u \preceq_L v$ in the case $x = y = \epsilon$. Thus, $\sim_L$ saturates $L$. %Thus, $L = \bigcup_{u \in L} [u]_{\sim_L}$.
+  Now suppose that $\theta$ is any congruence on $A^+$ saturating $L$; we show that $\theta \subseteq {\sim_L}$. Suppose that $u \theta v$. Let $x, y \in A^*$ be such that $xuy \in L$. Since $\theta$ is a congruence, $x u y \;{\theta}\; x v y$. Since $\theta$ saturates $L$, we get that $x v y \in L$. Thus, $u \preceq_L v$. The proof that $v \preceq_L u$ is symmetric.
+\end{proof}
+\begin{exercise}\label{exe:syntcong}\easy
+Prove that, for any $L \subseteq A^+$, $\sim_L$ is a congruence on $A^+$.
+\end{exercise}
+\begin{exercise}\label{exe:syntsemexa}\medium
+Give the multiplication table of the (finite) syntactic semigroup of the language $L = (ab)^*a$, which we considered at the beginning of this chapter. Verify that this semigroup is isomorphic to the one you found in Exercise~\ref{exe:diamond}.b. Is that the case for any automaton recognizing $L$?
+\end{exercise}
+The quotient $A^+/{\sim_L}$ is \emph{finite} if, and only if, there is a finite automaton accepting $L$. In this case, $L$ is called a \emph{regular} language. This fundamental result shows that the study of regular languages is, in a sense, equivalent to the study of finite semigroups (with a distinguished finite set of generators). Many elementary proofs of this equivalence exist; we will give a proof below that illustrates a basic use of duality theory, and, crucially, makes a connection with the theory of \emph{Boolean residuation algebras}, see Theorem~\ref{thm:regularlangs} below. Before doing so, we formally introduce the notion of \emph{recognition} by a semigroup, and we show in what sense the syntactic semigroup of a language is its \emph{smallest} recognizer.
+
+\begin{definition}
+Let $S$ and $T$ be semigroups and let $L \subseteq T$. We say that a homomorphism $f \colon S \to T$ \emph{recognizes} $L$ if there exists a subset $P \subseteq T$ such that $L = f^{-1}(P)$. We also say that $T$ \emph{recognizes} $L$ if there exists a homomorphism $f \colon S \to T$ recognizing $L$.
+\end{definition}
+\begin{exercise}\easy
+  Prove that a surjective homomorphism $f \colon S \to T$ recognizes $L \subseteq S$ if, and only if, $L = f^{-1}(f(L))$.
+\end{exercise}
+
+The syntactic semigroup is a \emph{smallest} recognizer for $L$, where `smallness' is measured according to the notion of \emph{division} of semigroups. We will say more about division when we talk about varieties later in this course. For now, we just give the basic definition and result connecting syntactic semigroups, recognition, and division.
+\begin{definition}
+  Let $S$ and $T$ be semigroups. We say that $S$ \emph{divides} $T$ if there exist a subsemigroup $T'$ of $T$ and congruence $\theta$ on $T'$ such that $S$ is isomorphic to $T'/{\theta}$.
+\end{definition}
+\begin{exercise}\easy\label{exe:division}
+Prove that $S$ divides $T$ if, and only if, there exist a semigroup $U$, an injective homomorphism $i \colon U \to T$, and a surjective homomorphism $g \colon U \to S$. %({\it Hint.} Use Proposition~\ref{prop:homthm}.)
+\end{exercise}
+\begin{proposition}
+  Let $L \subseteq A^+$. A semigroup $T$ recognizes $L$ if, and only if, the syntactic semigroup of $L$ divides $T$.
+\end{proposition}
+\begin{proof}
+  Let $T$ be a semigroup recognizing $L$. Pick a homomorphism $f \colon A^+ \to T$ and $P \subseteq T$ such that $L = f^{-1}(P)$. Let $U$ be the semigroup $A^+/{\ker(f)}$, and $i \colon U \to T$ the injective homomorphism given by Proposition~\ref{prop:homthm}. The congruence $\ker(f)$ on $A^+$ saturates $L$, so $\ker(f) \subseteq {\sim_L}$ by Proposition~\ref{prop:syntcong}. Thus, the function $g \colon U \to S(L)$ defined by $g([w]_{\ker{f}}) = [w]_{\sim_L}$ is well-defined, and $g$ is clearly surjective. By Exercise~\ref{exe:division}, $S(L)$ divides $T$.
+ 
+  Conversely, suppose that $S(L)$ divides a semigroup $T$; let $T'$ be a subsemigroup of $T$,  and $g \colon T' \to S(L)$ a surjective homomorphism. For any $a \in A$, choose $f(a) \in T'$ such that $g(f(a)) = [a]_{\sim_L}$. Denote by $\bar{f} \colon A^+ \to T$ the homomorphism extending $f$, which exists by Proposition~\ref{prop:free}. Then, applying the uniqueness part of Proposition~\ref{prop:free}, we have $g \circ \bar{f} = p_{\sim_L}$, since $g(\bar{f}(a)) = g(f(a)) = [a]_{\sim_L}$ for every $a \in A$. Hence, $L = (\bar{f})^{-1}(P)$, where $P := g^{-1}(p_{\sim_L}(L))$. Thus, $\bar{f} \colon A^+ \to T$ recognizes $L$.
+% 
+  %$\theta$ a congruence on $T'$, and $f \colon T'/{\theta} \to S(L)$ an isomorphism. For any $a \in A$, choose an element $g(a) \in T'$ such that $f(g(a)) = [a]_{\sim_L}$. Denote by $\bar{g} \colon A^+ \to T'$ the unique homomorphism extending $g$, by the existence part of Proposition~\ref{prop:free}. Then $f \circ \bar{g}$ is a homomorphism $A^+ \to S(L)$ with $f(\bar{g}(a)) = [a]_{\sim_L}$ for every $a \in A$, so $f \circ p_\theta \circ \bar{g} = p_{\sim_L}$, using the uniqueness part of Proposition~\ref{prop:free}. In particular,%Thus, $p_\theta \circ \bar{g} = f^{-1} \circ p_{\sim_L}$, and $\bar{g}$ recognizes $L$.
+\end{proof}
+
+\section{Discrete duality for regular languages}
+The aim of this section is to prove the following theorem.
+\begin{theoremstar}
+  Let $A$ be a finite alphabet, and let $L \subseteq A^+$. The following are equivalent:
+\begin{enumerate}
+  \item the syntactic congruence $\sim_L$ has finite index;
+  \item there is a finite automaton accepting $L$;  
+  \item the residuation ideal $B(L)$ generated by $L$ is finite.
+  \end{enumerate}
+\end{theoremstar}
+A language $L$ satisfying these properties is a \emph{regular} language.\footnote{As the reader may know from a basic course in automata theory, regularity of $L$ is also equivalent to: \emph{d.} there is a regular expression describing $L$. We will not talk much about regular expressions here.} %
+To understand the statement of this theorem, we first need to define what `the residuation ideal $B(L)$' is, and what it has to do with the syntactic congruence introduced in the previous section. To do so, we need to explain the basics of \emph{duality theory}, for now in \emph{discrete} form; i.e., topology does not yet play a role.
+
+\subsection*{Basics on lattices and Boolean algebras}
+\begin{definition}
+  A \emph{(bounded) lattice} is a partially ordered set $L$ in which every finite subset has a supremum and an infimum.
+  A \emph{complete lattice} $C$ is a partially ordered set in which every subset has a supremum and an infimum.
+\end{definition}
+
+\begin{exercise}\easy
+  Prove that a partially ordered set $L$ is a bounded lattice if, and only if, any subset $S$ of cardinality at most $2$ has a supremum and infimum.
+
+  Prove that a partially ordered set $C$ is a complete lattice if, and only if, any subset $S$ of $C$ has a supremum.
+\end{exercise}
+
+An interesting equivalent definition of lattices is the following. A \emph{lattice} is a tuple $(L,\vee,\wedge,\bot,\top)$, such that $(L, \vee, \bot)$ and $(L,\wedge, \top)$ are semilattices with neutral elements, and the \emphind{absorption laws} $a \wedge (a \vee b) = a$ and $a \vee (a \wedge b) = a$ hold for all $a, b \in L$. 
+% 
+Given a lattice~$(L,\vee,\wedge,\bot,\top)$ according to this algebraic definition, define
+\[ a \leq_L b \iff a \wedge b = a.\]
+Then $\leq_L$ defines a partial order on the set $L$ which makes $L$ into a lattice according to the order-theoretic definition.
+
+\begin{exercise}\easy
+Given a lattice~${(L,\leq)}$ according to the order-theoretic definition, prove that the operations of binary supremum ($\vee$), binary infimum ($\wedge$), and the maximum ($\top$) and minimum ($\bot$) make $L$ into a lattice according to the algebraic definition.
+\end{exercise}
+
+\begin{exercise}\medium
+Taking inspiration from the definitions for semigroups in Section~\ref{sec:semigroups}, write down the appropriate definitions of (bounded) \emph{sublattice}, \emph{lattice homomorphism}, \emph{congruence on a lattice}, and \emph{quotient lattice}. Formulate and prove the \emph{homomorphism theorem for lattices}. In case of doubt, refer to, e.g., p. 11 of \cite{thebook}.
+\end{exercise}
+
+\begin{exercise}\medium\label{exe:conlattice}
+Prove that the set of congruences on a semigroup $S$ is a complete lattice under the inclusion order.
+\end{exercise}
+The first kind of duality we introduce in this course is trivial, but important. 
+\begin{definition}[Formal duality]
+  The \emph{formal dual} or \emph{opposite} of a lattice $(L, \vee, \wedge, \bot, \top)$ is the lattice $L^\op := (L, \wedge, \vee, \top, \bot)$. Said otherwise, $L^\op$ is given by equipping the same set $L$ with the \emph{reverse} of the partial order $\leq_L$. An \emph{antitone} or \emph{contravariant} map from a lattice $L$ to a lattice $M$ is a map that is monotone from $L^\op$ to $M$. A \emph{dual isomorphism} between $L$ and $M$ is an isomorphism between $L^\op$ and $M$.
+\end{definition}
+
+We now define distributive lattices and Boolean algebras.
+\begin{definition}
+A lattice $L$ is called \emph{distributive} if
+\begin{equation}\label{eq:dist1}
+\text{ for all } a, b, c \in L, \quad a \wedge (b \vee c) = (a \wedge b) \vee (a \wedge c),
+\end{equation}
+and
+\begin{equation} \label{eq:dist2}
+  \text{ for all } a, b, c \in L, \quad a \vee (b \wedge c) = (a \vee b) \wedge (a \vee c).
+\end{equation}
+  If $a$ is an element in a lattice, an element $b$ is called a \emph{complement} of $a$ if $a \wedge b = \bot$ and $a \vee b = \top$. A \emph{Boolean algebra} is a distributive lattice in which each element has a complement. If $L$ is a Boolean algebra, we denote by $\neg a$ the unique complement of an element $a$. A \emph{subalgebra} of a Boolean algebra is a sublattice which moreover contains the complement of any of its elements.
+  \end{definition}
+
+
+\begin{exercise}\easy \label{exe:latticebasics} This exercise asks you to establish some properties and give some examples of lattices and Boolean algebras.
+  \begin{enumerate}
+  \item Prove that, in any lattice, (\ref{eq:dist1}) holds if, and only if, (\ref{eq:dist2}) holds.
+  \item Prove that any sublattice and any quotient of a lattice is distributive.
+  \item Give two examples of lattices that are not distributive.
+  \item  Prove that any element of a distributive lattice has at most one complement.
+  \item Give an example of a sublattice of a Boolean algebra that is not a subalgebra.
+  \item Prove that a lattice homomorphism between Boolean algebras must preserve complements.
+  \item Prove that, in a complete Boolean algebra, the complement of a supremum is equal to the infimum of the complements, i.e., for any subset $U$, $\neg(\bigvee U) = \bigwedge_{u \in U} \neg u$.
+  \item Prove that a function between Boolean algebras that preserves $\wedge$ and $\neg$ is a homomorphism.
+   \end{enumerate}
+ \end{exercise}
+ 
+The definition of Boolean algebras that we gave above was order-theoretic; as for lattices, there exist several equivalent \emph{equational} definitions. The simplest equational definition, and most useful for our purposes, is that a \emph{Boolean algebra} is a tuple $(B,\wedge,\vee,\bot,\top,\neg)$ such that $(B,\wedge,\vee,\bot,\top)$ is a distributive lattice, and for all $a \in B$, $a \wedge \neg a = \bot$ and $a \vee \neg a = \top$. The \emph{terminology} `Boolean algebra' comes from another (the original) equational definition: a Boolean algebra is the same thing as a commutative ring with unit in which all elements are idempotent.
+\begin{exercise}\label{exe:BAeq}\easy
+Let $(B,+,\cdot,0,1)$ be a commutative ring with unit in which $a^2 = a$ for all $a \in B$. Define $a \leq b$ if, and only if, $a \cdot b = a$. Prove that $\leq$ is a distributive lattice order on $B$, and that
+% (Hint: the infimum of $a$ and $b$ is $a \cdot b$, and the supremum of $a$ and $b$ is $a + b - ab$.)
+ every element of $B$ has a complement with respect to $\leq$. \emph{Hint:} first show that $a + a = 0$ for all $a \in B$.
+% (Hint: the complement is 1 - a)
+
+Conversely, let $(B,\wedge,\vee,\bot,\top,\neg)$ be a Boolean algebra. Define, for any $a, b \in B$, $a + b := (a \wedge \neg b) \vee (\neg a \wedge b)$, $a \cdot b := a \wedge b$, $0 := \bot$ and $1 := \top$. Prove that $(B,+,\cdot,0,1)$ is a commutative ring with unit in which $a^2 = a$ for all $a \in B$.
+\end{exercise}
+
+\begin{example}\label{exa:downsetlattice}
+  For any partially ordered set $P$, the collection $\Down(P)$ of \emph{downward closed} subsets of $P$ is a distributive lattice under the operations of intersection $\cap$ and union $\cup$, with bounds $\emptyset$ and $P$. In general, $\Down(P)$ is not a Boolean algebra, except when the order on $P$ is trivial (i.e., $p \leq q$ implies $p = q$). In this case, we obtain the \emph{power set Boolean algebra}, $\Po(P)$. The operation $\neg$ in this Boolean algebra is given by $\neg u := P \setminus u$, for any $u \in \Po(P)$.
+\end{example}
+Example~\ref{exa:downsetlattice} covers every \emph{finite} distributive lattice and Boolean algebra, as we will see shortly. However, \emph{infinite} lattices and Boolean algebras may be more complicated. We give just one example here, which the reader may be familiar with from a topology and/or logic course -- more examples follow later in the course.
+\begin{example}\label{exa:cantor}
+Let $B$ be the collection of \emph{clopen} (closed-and-open) subsets of the Cantor space, $\{0,1\}^\omega$, where $\{0,1\}$ has the discrete topology, and $\{0,1\}^\omega$ carries the product topology, generated by the sets $U_{n,i} := \{x \in \{0,1\}^\omega \ \colon \ x_n = i\}$, for $n \in \omega, i \in \{0,1\}$. Then $B$ is a Boolean algebra. Indeed, $B$ is a subalgebra of the power set algebra $\Po(\{0,1\}^\omega)$. 
+\end{example}
+\begin{exercise}\easy
+Prove that, for the Boolean algebra $B$ of Example~\ref{exa:cantor}, there is no set $X$ such that $B$ is isomorphic to $\Po(X)$. {\it Hint.} Show that $B$ is not complete.
+\end{exercise}
+\begin{exercise}\medium
+Prove that the Boolean algebra $B$ of Example~\ref{exa:cantor} is isomorphic to the Boolean algebra of equivalence classes of formulas of propositional logic over a countable set of variables. (The latter algebra is known as the \emph{Lindenbaum-Tarski algebra} of propositional logic.)
+\end{exercise}
+We will now characterize (Theorem~\ref{thm:BAdiscdual}) the Boolean algebras that are of the form $\Po(X)$ for some set $X$.
+\begin{definition}
+An \emph{atom} in a Boolean algebra is a minimal element above $\bot$. That is, $x \in B$ is an atom if $x \neq \bot$ and, for any $b \in B$, if $b < x$ then $b = \bot$. 
+A Boolean algebra $B$ is called \emph{atomic} if, for every element $b \in B$, if $b \neq \bot$, then there exists an atom $x \in B$ with $x \leq b$.
+\end{definition}
+\begin{lemma}\label{lem:atom}
+Let $x$ be an atom in a Boolean algebra $B$. Then, for any $b \in B$, $x \leq b$ if, and only if, $x \nleq \neg b$.
+\end{lemma}
+\begin{proof}
+If $x \leq b$, then necessarily $x \nleq \neg b$ because $b \wedge \neg b = \bot$ and $x \neq \bot$. Conversely, note that if $x \nleq \neg b$, then $x \wedge \neg b < x$, and thus $x \wedge \neg b = \bot$, since $x$ is an atom. Thus,
+  \[x = x \wedge \top = x \wedge (b \vee \neg b) = (x \wedge b) \vee (x \wedge \neg b) = x \wedge b,\]
+  so that $x \leq b$.
+\end{proof}
+\begin{theorem}[Discrete duality for Boolean algebras, objects]\label{thm:BAdiscdual}
+  A Boolean algebra $B$ is complete and atomic if, and only if, $B$ is isomorphic to $\Po(X)$, where $X$ is the set of atoms of $B$.
+\end{theorem}
+\begin{proof}
+  In a Boolean algebra of the form $\Po(X)$, any singleton set is an atom, and any supremum is given by union, so $\Po(X)$ is certainly complete and atomic. For the converse, suppose that $B$ is a complete and atomic Boolean algebra, write $X$ for the set of atoms of $B$, and define the function
+  \[ \phi \colon B \to \Po(X), \quad \phi(b) := \{x \in X \ \colon \ x \leq b\}.\]
+  We show that the function $\phi$ is an isomorphism.
+
+  Firstly, if $b, c \in B$, then $x \leq b \wedge c$ if, and only if, $x \leq b$ and $x \leq c$, so that $\phi(b \wedge c) = \phi(b) \cap \phi(c)$. Secondly, $\phi(\neg b) = X \setminus \phi(b)$ by Lemma~\ref{lem:atom}. Thus, $\phi$ preserves $\neg$ and $\wedge$, and therefore is a homomorphism by the last item of Exercise~\ref{exe:latticebasics}.
+
+  We show that $\phi$ is injective. If $b, b' \in B$ are such that $b \neq b'$, then either $b \wedge \neg b' \neq \bot$ or $b' \wedge \neg b \neq \bot$. Without loss of generality, assume the first. Since $B$ is atomic, pick an atom $x \in B$ such that $x \leq b \wedge \neg b'$. Then $x \in \phi(b)$ and $x \not\in \phi(b')$, so $\phi(b) \neq \phi(b')$.
+
+  Finally, for surjectivity, we show that, for any set $u \subseteq X$, we have $\phi(\bigvee u) = u$. Write $b_u := \bigvee u$. Indeed, if $x \in u$ then certainly $x \leq b_u$. Conversely, if $x \leq b_u$, then by Lemma~\ref{lem:atom}, $x \nleq \neg b_u$, which is equal to the infimum of the set $\{\neg y \ \colon \ y \in u\}$, see Exercise~\ref{exe:latticebasics}. Thus, pick $y \in u$ such that $x \nleq \neg y$. Again by Lemma~\ref{lem:atom}, $x \leq y$. Since $y$ is an atom and $x \neq \bot$, we get $x = y$, so $x \in u$.
+\end{proof}
+We note an immediate consequence of Theorem~\ref{thm:BAdiscdual} in the \emph{finite} case.
+\begin{corollary}
+Any finite Boolean algebra $B$ is isomorphic to $\mathcal{P}(X)$, where $X$ is the set of atoms of $B$.
+\end{corollary}
+\begin{proof}
+Let $B$ be a finite Boolean algebra. Clearly, $B$ is complete. It is also atomic, because for any $b \in B$, the set $\{c \in B \ \colon \ \bot \neq c \leq b\}$ is finite, and therefore contains a minimal element, which must be an atom.
+\end{proof}
+\begin{exercise}\medium
+Prove that every finite distributive lattice $L$ is isomorphic to $\Down(X)$, where $X$ is the partially ordered set of join-irreducible elements of $L$, i.e., the elements $x \in L$ for which $x \neq \bot$ and $x = a \vee b$ implies $x = a$ or $x = b$ for any $a, b \in L$. {\it Hint.} If you are stuck, see, e.g., Section 1.3 of \cite{thebook}.
+\end{exercise}
+Theorem~\ref{thm:BAdiscdual} shows that complete and atomic Boolean algebras are completely determined by their sets of atoms. The set of atoms of a complete and atomic Boolean algebra $B$ is sometimes called the \emph{discrete dual space} of $B$, and if $X$ is a set then the Boolean algebra $\Po(X)$ is sometimes called the \emph{discrete dual algebra} of $X$. %
+Later in this course, we will see how to modify Theorems~\ref{thm:BAdiscdual}, and also Theorem~\ref{thm:disc-quot-sub} below, to obtain a \emph{duality} (dual equivalence) between the category of \emph{all} Boolean algebras and the category of compact Hausdorff zero-dimensional (a.k.a. \emph{profinite}) topological spaces. This involves (1) using ultrafilters to extend the above object correspondence to Boolean algebras that are not complete or atomic; (2) establishing a correspondence at the level of \emph{all homomorphisms} between Boolean algebras. %
+
+Duality theory becomes powerful when considering additional structure on Boolean algebras or their corresponding dual spaces. We end this subsection with a first result in that direction: a correspondence between complete subalgebras of a discrete Boolean algebra and equivalence relations on its set of atoms. We will build on this correspondence when we throw semigroups into the mix in the next subsection.
+\begin{definition}
+  A \emph{subalgebra} of a Boolean algebra $B$ is a subset $I$ of $B$ such that, for any $a, a' \in I$, we have $a \vee a' \in I$ and $\neg a \in I$ (and hence also $a \wedge a' \in I$, and $\bot, \top \in I$). If $B$ is moreover complete, then by a \emph{complete subalgebra} we mean a subalgebra $I$ of $B$ which moreover has the property that $\bigvee U \in I$ for any $U \subseteq I$ (and hence also $\bigwedge U \in I$ for any $U \subseteq I$).
+\end{definition}
+\begin{exercise}\medium
+Show that a complete Boolean algebra $B$ may have a subalgebra $I$ which is by itself a complete Boolean algebra, but is not a complete subalgebra of $B$ according to the above definition.
+\end{exercise}
+\begin{theorem}[Discrete duality for Boolean algebras, subalgebras and quotients]\label{thm:disc-quot-sub}
+  Let $X$ be a set and $B := \Po(X)$ the dual complete and atomic Boolean algebra. The complete lattice of equivalence relations on $X$ is dually isomorphic to the complete lattice of complete subalgebras of $B$.
+\end{theorem}
+\begin{proof}
+  For any relation $R$ on $X$, define $I_R \subseteq B$ by
+  \[ I_R := \{ a \in B \ \colon \ \text{ for any } (x,x') \in R, \quad x \in a \text{ if, and only if, } x' \in a \},\]
+  and for any subset $J$ of $B$, define ${\sim_J} \subseteq X^2$ by
+  \[ x \sim_J x' \iff \text{ for any } a \in J, \quad x \in a \text{ if, and only if, } x' \in a.\]
+  Note that, for any relation $R$ on $X$ and any subset $J$ of $B$, we have
+  \[ J \subseteq I_R \iff R \subseteq {\sim_J},\]
+and that both assignments are antitone.
+  It follows that, for any $J \subseteq B$, $J \subseteq I_{\sim_J}$, and for any $R \subseteq X^2$, we have $R \subseteq {\sim_{I_R}}$, and that the assignments $R \mapsto I_R$ and $J \mapsto {\sim_J}$ restrict to anti-isomorphisms between their respective  images (see Exercise~\ref{exe:galconn}). We prove that the relations on $X$ that are of the form $\sim_J$ for some $J \subseteq B$ are exactly the equivalence relations, and that the subsets of the form $I_R$ for some $R \subseteq X^2$ are exactly the complete subalgebras.
+
+  It is easy to see that $\sim_J$ is always an equivalence relation, for any $J \subseteq B$. Conversely, if $\sim$ is an equivalence relation, and $x \sim_{J_\sim} x'$, then in particular $x' \in [x]_{\sim}$ since $x \in [x]_\sim$, so $x {\sim} x'$. Thus, $\sim_{J_\sim} = {\sim}$. 
+
+  It is again easy to see that $I_R$ is always a complete subalgebra, for any relation $R$. Conversely, if $I$ is a complete subalgebra of $B$, then for any $a \in I_{\sim_I}$, note that $a = \bigvee_{x \in a} [x]_{\sim_I}$, so we are done if we can show that $[x]_{\sim_I} \in I$ for every $x \in X$. Note that $[x]_{\sim_I} = \bigwedge_{b \in I, x \in b} b \wedge \bigwedge_{c \in I, x \not\in c} \neg c$, which is an element of $I$ since $I$ is a complete subalgebra.
+\end{proof}
+\begin{exercise}\label{exe:galconn}\easy
+  Let $C$ and $D$ be complete lattices, and suppose that $f \colon C \leftrightarrows D \colon g$ are a pair of antitone maps between them such that, for any $c \in C$ and $d \in D$, $d \leq f(c)$ if, and only if, $c \leq g(d)$. (Such a pair is called a \emph{Galois connection} between $C$ and $D$.) Prove that $f\circ g \circ f = f$ and $g \circ f \circ g = g$. Deduce that the restrictions $f \colon g(D) \leftrightarrows f(C) \colon g$ are anti-isomorphisms between $g(D)$ and $f(C)$.
+\end{exercise}
+
+
+\subsection*{Semigroup quotients and residuation ideals}
+
+We use discrete duality to associate a Boolean algebra with additional operations to any semigroup. For any semigroup $S$, the Boolean algebra $\Po(S)$ also carries a \emph{complex multiplication}, $\cdot$, defined by 
+\[ s \cdot t := \{\,mn \mid  m \in s, n \in t\,\}.\]
+There exist two operations, $\backslash, \slash \colon \Po(S)^2 \to \Po(S)$, which are uniquely determined by the property that they are \emph{left and right residuals} of $\cdot$, i.e., for any $r, s, t \in \Po(S)$, 
+\begin{equation}\label{eq:residual} r\cdot s \subseteq t \iff s \subseteq r \backslash t \iff r \subseteq t \slash s.
+  \end{equation}
+More explicitly, $\backslash$ and $\slash$ are given by the following formulas:
+\begin{align}\
+ r \backslash t &=\{m \in S \ \mid \ km \in t \text{ for all } k \in r\}, \label{eq:defbackslash}\\
+ t \slash s &= \{m \in S \ \mid \ m\ell \in t \text{ for all } \ell \in s\}. \label{eq:defslash}
+\end{align}
+\begin{exercise}\easy
+Prove that the formulas (\ref{eq:defbackslash}) and (\ref{eq:defslash}) indeed define the unique operations satisfying (\ref{eq:residual}).
+\end{exercise}
+
+\begin{definition}
+Let $S$ be a semigroup. We call the Boolean algebra with three additional operations  $(\Po(S), \cdot, \backslash, \slash)$ the \emph{(discrete) dual residuated Boolean algebra} of $M$.
+
+A sublattice $I$ of $\Po(S)$ is a \emphind{residuation ideal} if, for any $r \in \Po(S)$ and $s \in I$, both $r \backslash s \in I$ and $s \slash r \in I$. A residuation ideal $I$ is said to be \emph{Boolean} provided the underlying sublattice is a Boolean algebra. A residuation ideal is called \emph{complete} provided the underlying sublattice is a complete sublattice of $\Po(S)$, i.e., for any $U \subseteq I$, we have $\bigcup U \in I$.
+
+For a subset $U \subseteq \Po(S)$, we denote by $B(U)$ the \emph{Boolean residuation ideal generated by $U$}, that is, the smallest Boolean residuation ideal containing $U$. If $U = \{u\}$ for a single element $u \in \Po(S)$, we write $B(u)$ instead of $B(\{u\})$. 
+\end{definition}
+
+We are now ready to prove the discrete duality theorem for semigroups which we will need in order to characterize regularity. Recall from Exercise~\ref{exe:conlattice} that the congruences on a semigroup $S$ form a complete lattice under the inclusion order.
+
+\begin{theorem}[Discrete duality for semigroups, quotients and subs]\label{thm:semigroup-quotient-duality}
+  Let $S$ be a semigroup and $(\Po(S), \cdot, \backslash, \slash)$ its discrete dual residuated Boolean algebra. The congruence lattice of $S$ is dually isomorphic to the lattice of complete Boolean residuation ideals of $\Po(S)$.%Under discrete duality, monoid quotients of $M$ correspond to complete Boolean residuation ideals of $\Po(M)$.
+\end{theorem}
+\begin{proof}
+  It suffices to show that the dual isomorphism given in the proof of Theorem~\ref{thm:disc-quot-sub} restricts to semigroup congruences and complete Boolean residuation ideals. Using the same notation as in that proof, suppose first that $\sim$ is a congruence on $S$; we show that $I_\sim$ is a residuation ideal. Indeed, let $r \in \Po(S)$ and $s \in I_\sim$. We need to show that $s/r$ and $r \backslash s$ are both $\sim$-saturated. We only show the former, the proof of the latter is the same. Suppose that $m \in s/r$ and that $m \sim m'$. Let $n \in r$ be arbitrary. Since $\sim$ is a congruence, we have $mn \sim m'n$. Since $m \in s/r$, we have $mn \in s$. Since $s$ is $R$-saturated, we get $m'n \in s$, as required.
+
+  Now suppose that $I$ is a residuation ideal in $\Po(S)$; we show that $\sim_I$ is a congruence. Suppose that $m \sim_I m'$ and let $n \in S$ be arbitrary. For every $a \in I$, if $mn \in a$, then $m \in a/\{n\}$, and $a/\{n\} \in I$ because $I$ is a residuation ideal. Therefore, $m' \in a/\{n\}$, since $m \sim_I m'$. Thus, $m'n \in a$, and we conclude that $mn \sim_I m'n$. The proof that $nm \sim_I nm'$ is similar, using that $\{n\}\backslash a \in I$.
+\end{proof}
+
+\begin{definition}
+Let $S$ be a semigroup, $m\in S$, and  $s\in\Po(S)$. Then we denote $\{m\}\backslash s$ by $m^{-1}s$ and we denote $s/\{m\}$ by $sm^{-1}$ and we call these the \emph{left and right quotients} of $s$ by $m$, respectively.
+\end{definition}
+
+
+\begin{exercise}\easy \label{exe:quotients-enough}
+Prove that a complete subalgebra $A$ of $\Po(S)$ is a residuation ideal if, and only if, for any $s \in A$ and $n \in S$, $sn^{-1} \in A$ and $n^{-1} s \in A$. {\it Hint.} Inspect the proof of Theorem~\ref{thm:semigroup-quotient-duality}.
+\end{exercise}
+
+\begin{exercise}\easy \label{exe:quot-hom}
+Let $S$ be a semigroup and $m\in S$. Prove that the maps 
+\[
+m^{-1}(\ )\colon \Po(S)\to \Po(S)\ \text{ and }\ (\ )m^{-1}\colon \Po(S)\to \Po(S)
+\]
+ are Boolean algebra homomorphisms.  
+\end{exercise}
+
+The duality of Theorem~\ref{thm:semigroup-quotient-duality} allows us to make a first observation that links residuation ideals to the syntactic congruence. 
+Recall from Proposition~\ref{prop:syntcong} that $\sim_L$ is the largest congruence saturating $L$. It therefore follows from the dual isomorphism of Theorem~\ref{thm:semigroup-quotient-duality} that the corresponding complete Boolean residuation ideal is the smallest one that contains $L$. We will now show that this residuation ideal is finite if, and only if, $L$ is accepted by an automaton.
+
+\begin{definition}
+ Let $\cA = (Q, A, \delta, I_0, F_0)$ be an automaton and let $L = L(\cA)$ be the language accepted by $\cA$. For any pair of subsets $(I, F) \in \Po(Q)^2$, denote by $L(I,F)$ the language accepted by the automaton $(Q, A, \delta, I, F)$; in particular, $L(\cA) = L(I_0, F_0)$. We denote by $B(\cA)$ the Boolean subalgebra of $\Po(A^+)$ generated by the languages $L(I,F)$, for $(I,F) \in \Po(Q)^2$.
+\end{definition}
+\begin{exercise}\label{exe:exactd}
+  This exercise is about the example automaton $\cA$ given at the beginning of Section~\ref{sec:example}.
+  \begin{enumerate}
+  \item \easy List the languages $L(I,F)$ for $(I,F) \in \Po(Q)^2$. How many different ones are there?
+  \item \medium What algebraic properties does the function $(I,F) \mapsto L(I,F)$ seem to have, viewed as a function from the lattice $\Po(Q)^2$ to $\Po(A^+)$? Prove that it always has these properties.
+  \item \medium How many elements does $B(\cA)$ have in this case? What is the best way to describe them?
+  \end{enumerate}
+\end{exercise}
+
+We will prove (Proposition~\ref{prop:residuationideal}) that $B(\cA)$ is a residuation ideal in $\Po(A^+)$. Note that the generating set for $B(\cA)$ has at most $2^{2|Q|}$ elements and is thus in particular \emph{finite}.  Hence, $B(\cA)$ is also finite. 
+%
+
+Recall from Definition~\ref{def:automaton} the definition of the (backward) \emph{reachability function} $\Diamond$ for an automaton $\cA$. There is also a \emph{forward reachability function}, $\blacklozenge$, where, for any $U \subseteq Q$,  $\blacklozenge_w(U)$ is the set of states $q \in Q$ such that there exists a path $u \stackrel{w}{\to} q$ for some $u \in U$.
+\begin{lemma}\label{lem:autfinite}
+For any $x \in A^+$, $(I,F) \in \Po(Q)^2$, we have
+\[ x^{-1} L(I,F) = L(\blacklozenge_x(I), F), \quad L(I,F)x^{-1} = L(I, \Diamond_x(F)).\]
+\end{lemma}
+\begin{proof}
+  Recall that, for any $x, w \in A^+$, $wx \in L(I,F)$ if, and only if, $\Diamond_{wx}(F) \cap I \neq \emptyset$. This is the case if, and only if, $\Diamond_w(\Diamond_x(F)) \cap I \neq \emptyset$, which establishes the second equality. The first equality follows similarly, noting that $xw \in L(I,F)$ if, and only if $\blacklozenge_{xw}(I) \cap F \neq \emptyset$.
+  %there exist states $q_0, q_1, q_2 \in Q$ such that $q_0 \in I$, $q_2 \in F$, $q_0 \stackrel{x}{\to} q_1$, and $q_1 \stackrel{w}{\to} q_2$. Equivalently, $w$ is accepted by $\cA' = (Q,A,\delta,\blacklozenge_x(I),F)$. This proves the first equality, the proof of the second equality is very similar. 
+\end{proof}
+
+
+\begin{proposition}\label{prop:residuationideal}
+For any automaton $\cA$, $B(\cA)$ is a finite (hence complete) Boolean residuation ideal in $\Po(A^+)$. %For any $K \in \Po(A^*)$, %the following hold:
+%\begin{enumerate}
+%\item if $L \in R(\cA)$, then $K \backslash L \in \cL(\cA)$ and $L \slash K \in \cL(\cA)$;
+%\item \label{it:latticeresideal} 
+%if $L \in \cL(\cA)$, then $K \backslash L \in \cL(\cA)$ and $L \slash K \in \cL(\cA)$ and if $L \in \cB(\cA)$, then $K \backslash L \in \cB(\cA)$ and $L \slash K \in \cB(\cA)$.
+%;
+%\item \label{it:BAresideal} if $L \in \cB(\cA)$, then $K \backslash L \in \cB(\cA)$ and $L \slash K \in \cB(\cA)$.
+%\end{enumerate}
+\end{proposition}
+\begin{proof}
+Let $x\in A^*$. By Lemma~\ref{lem:autfinite}, the generating set of $B(\cA)$ is closed under the quotient operations $x^{-1}(\ )$ and $(\ )x^{-1} $. Also, by Exercise~\ref{exe:quot-hom}, these operations are homomorphisms, and thus the Boolean algebra generated by this set remains closed under these operations. Since $B(\cA)$ is finite, it is complete. By Exercise~\ref{exe:quotients-enough}, $B(\cA)$ is a residuation ideal.
+\end{proof}
+%
+We are now ready to prove the main theorem of the chapter.
+
+
+
+\begin{theorem}\label{thm:regularlangs}
+  Let $A$ be a finite alphabet, and let $L \subseteq A^+$. The following are equivalent:
+\begin{enumerate}
+  \item the syntactic congruence $\sim_L$ has finite index;
+  \item there is a finite automaton accepting $L$;  
+  \item the residuation ideal $B(L)$ generated by $L$ is finite.
+  \end{enumerate}
+\end{theorem}
+\begin{proof}
+If $\sim_L$ has finite index, then $L$ is easily seen to be accepted by the deterministic finite automaton with state set $A^+/{\sim_L} \cup \{\epsilon\}$, alphabet $A$, transitions defined by $[w]_{\sim_L} \stackrel{a}{\to} [wa]_{\sim_L}$, $\epsilon \stackrel{a}{\to} [a]_{\sim_L}$, initial state $\epsilon$ and final states $\{[w]_{\sim_L} \ \colon \ w \in L\}$. If some finite automaton $\cA$ accepts $L$, then $L \in B(\cA)$, and $B(\cA)$ is a finite Boolean residuation ideal, so by definition of $B(L)$, we obtain $B(L) \subseteq B(\cA)$, so that $B(L)$ is finite as well. Finally, if $B(L)$ is finite, then it is complete. By Theorem~\ref{thm:semigroup-quotient-duality}, its corresponding congruence is the largest congruence which saturates $L$. By Proposition~\ref{prop:syntcong}, this is $\sim_L$, which must have finite index, because its corresponding residuation ideal $B(L) = A_{\sim_L}$ is finite.
+\end{proof}
+\begin{exercise}
+  \begin{enumerate}
+  \item \medium Verify, in the case of the example automaton given at the beginning of this chapter, that $B(L)$ is equal to $B(\cA)$ (which you calculated in Exercise~\ref{exe:exactd}), and isomorphic to the power semigroup of $A^+/{\sim_L}$ (which you calculated in Exercise~\ref{exe:syntsemexa}).
+\item \easy Give an example of an automaton $\cA'$ that recognizes $L$ but has $B(\cA)$ strictly bigger than $B(L)$.
+\item \hard Formulate a conjecture about when $B(\cA)$ is equal to $B(L)$, and prove it.
+  \end{enumerate}
+  
+\end{exercise}
+
+The title of this chapter was `Syntactic semigroups as dual spaces'. But why `spaces'? We barely mentioned topology in this chapter, so for now the word `space' may just seem like a hollow name to make things sound fancy. In the next chapter, we will show that this is not the case, and we will become more serious about topology.
+
+%%% Local Variables:
+%%% TeX-master: "mpri-vangool-notes"
+%%% End:
