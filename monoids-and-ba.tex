@@ -29,10 +29,10 @@ This automaton can be compactly described as a function $\Diamond$ from the fini
 For example, $\Diamond_a(\{q_1\}) = \Diamond_a(\{q_0,q_1\}) = \{q_0\}$, and $\Diamond_b(\{q_1\} = \emptyset$.
 
 Let us now also write, for any finite word $w$ in $A^+$, and any set of states $U \subseteq Q$,
-\[ \Diamond_w(S) := \{ q_i \ \mid \ \text{ there is a state } u \in U \text{ and a path } q_i \stackrel{w}{\to} u \}.\]
+\[ \Diamond_w(U) := \{ q_i \ \mid \ \text{ there is a state } u \in U \text{ and a path } q_i \stackrel{w}{\to} u \}.\]
 Note that, if $w = w_1w_2$ for some $w_1, w_2 \in A^+$, then
 \begin{equation}\label{eq:diamond-hom}
-\Diamond_w(S) = \Diamond_{w_1} (\Diamond_{w_2}(S)).
+\Diamond_w(U) = \Diamond_{w_1} (\Diamond_{w_2}(U)).
 \end{equation}
 
 \begin{exercise}\label{exe:diamond}
@@ -200,7 +200,7 @@ Give the multiplication table of the (finite) syntactic semigroup of the languag
 The quotient $A^+/{\sim_L}$ is \emph{finite} if, and only if, there is a finite automaton accepting $L$. In this case, $L$ is called a \emph{regular} language. This fundamental result shows that the study of regular languages is, in a sense, equivalent to the study of finite semigroups (with a distinguished finite set of generators). Many elementary proofs of this equivalence exist; we will give a proof below that illustrates a basic use of duality theory, and, crucially, makes a connection with the theory of \emph{Boolean residuation algebras}, see Theorem~\ref{thm:regularlangs} below. Before doing so, we formally introduce the notion of \emph{recognition} by a semigroup, and we show in what sense the syntactic semigroup of a language is its \emph{smallest} recognizer.
 
 \begin{definition}
-Let $S$ and $T$ be semigroups and let $L \subseteq T$. We say that a homomorphism $f \colon S \to T$ \emph{recognizes} $L$ if there exists a subset $P \subseteq T$ such that $L = f^{-1}(P)$. We also say that $T$ \emph{recognizes} $L$ if there exists a homomorphism $f \colon S \to T$ recognizing $L$.
+Let $S$ and $T$ be semigroups and let $L \subseteq S$. We say that a homomorphism $f \colon S \to T$ \emph{recognizes} $L$ if there exists a subset $P \subseteq T$ such that $L = f^{-1}(P)$. We also say that $T$ \emph{recognizes} $L$ if there exists a homomorphism $f \colon S \to T$ recognizing $L$.
 \end{definition}
 \begin{exercise}\easy
   Prove that a surjective homomorphism $f \colon S \to T$ recognizes $L \subseteq S$ if, and only if, $L = f^{-1}(f(L))$.
@@ -258,7 +258,7 @@ Given a lattice~${(L,\leq)}$ according to the order-theoretic definition, prove 
 \end{exercise}
 
 \begin{exercise}\medium
-Taking inspiration from the definitions for semigroups in Section~\ref{sec:semigroups}, write down the appropriate definitions of (bounded) \emph{sublattice}, \emph{lattice homomorphism}, \emph{congruence on a lattice}, and \emph{quotient lattice}. Formulate and prove the \emph{homomorphism theorem for lattices}. In case of doubt, refer to, e.g., p. 11 of \cite{thebook}.
+Taking inspiration from the definitions for semigroups in Section~\ref{sec:semigroups}, write down the appropriate definitions of (bounded) \emph{sublattice}, \emph{lattice homomorphism}, \emph{congruence on a lattice}, and \emph{quotient lattice}. Formulate and prove the \emph{homomorphism theorem for lattices}. In case of doubt, refer to, e.g., p. 11 of \cite{thebook}.\footnote{To fully appreciate why all these things work just as well for lattices as for semigroups (as for groups, rings, etc.), one needs to study universal algebra, see, e.g., \cite{BurSan2000}.}
 \end{exercise}
 
 \begin{exercise}\medium\label{exe:conlattice}
@@ -286,7 +286,7 @@ and
 \begin{exercise}\easy \label{exe:latticebasics} This exercise asks you to establish some properties and give some examples of lattices and Boolean algebras.
   \begin{enumerate}
   \item Prove that, in any lattice, (\ref{eq:dist1}) holds if, and only if, (\ref{eq:dist2}) holds.
-  \item Prove that any sublattice and any quotient of a lattice is distributive.
+  \item Prove that any sublattice and any quotient of a distributive lattice is distributive.
   \item Give two examples of lattices that are not distributive.
   \item  Prove that any element of a distributive lattice has at most one complement.
   \item Give an example of a sublattice of a Boolean algebra that is not a subalgebra.
